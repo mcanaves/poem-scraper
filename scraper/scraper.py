@@ -1,6 +1,6 @@
 import click
 
-from utils import coro
+from scraper.utils import coro
 
 
 @click.command()

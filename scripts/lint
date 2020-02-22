@@ -4,7 +4,7 @@ PREFIX=""
 if [ -d "venv" ] ; then
     PREFIX="venv/bin/"
 fi
-SOURCE_FILES="scraper.py"
+SOURCE_FILES="scraper"
 
 GREEN="\033[32m"
 NC="\033[0m" # No Color
@@ -21,5 +21,5 @@ else
     echo "${GREEN}Checking ${NC}imports order..."
     ${PREFIX}isort -c -df -rc $SOURCE_FILES
     echo "${GREEN}Checking ${NC}static type..."
-    ${PREFIX}mypy scraper.py
+    ${PREFIX}mypy $SOURCE_FILES
 fi

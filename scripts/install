@@ -9,8 +9,8 @@ BOLD="\033[1m"
 python3 -m venv venv
 echo "${GREEN}Virtualenv created.${NC} Installing dependencies..."
 echo
-${PREFIX}python -m pip install -U pip
-${PREFIX}python -m pip install -r requirements.txt
+${PREFIX}pip install -U pip
+${PREFIX}pip install -r requirements.txt
 echo
 echo "${GREEN}Success!${NC} You can now ${BOLD}activate${NC} your ${BOLD}virtual environment${NC} using:"
 echo "source ${PREFIX}activate"

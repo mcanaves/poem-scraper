@@ -12,7 +12,7 @@ build: ## Create a virtualenv and install dependencies
 
 .PHONY: scraping
 scraping: ## Start scraping poems. Arguments: options=[OPTIONS] will pass args to script. Use --help to see all available options.
-	./venv/bin/python scraper.py $(options)
+	./venv/bin/python -m scraper.scraper $(options)
 
 ##@ 🛠  Testing and development
 
