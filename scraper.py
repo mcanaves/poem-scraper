@@ -1,8 +1,11 @@
 import click
 
+from utils import coro
+
 
 @click.command()
-def main():
+@coro
+async def main():
     """
     Poetry Foundation Scraper.
 
