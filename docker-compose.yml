@@ -6,6 +6,8 @@ services:
         context: .
         args:
           APP_ENV: 'local'
+    environment:
+      - LOGGING_LEVEL=DEBUG
     volumes:
       - .:/opt:rw
     networks:

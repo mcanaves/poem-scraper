@@ -18,4 +18,4 @@ RUN apk add --no-cache --virtual .build-deps gcc libc-dev libxslt-dev \
 
 COPY . /opt
 
-CMD [ "python", "-m", "scraper.scraper" ]
+ENTRYPOINT [ "python", "-m", "scraper.cli" ]

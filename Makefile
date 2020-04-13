@@ -19,4 +19,4 @@ scraping: ## Start scraping. Arguments: options=[OPTIONS]. Use --help to see all
 
 .PHONY: lint
 lint: ## Check of fix code lint. Arguments: fix=yes will force changes.
-	docker-compose run --no-deps --rm poems-scraper /opt/scripts/lint.sh $(fix)
+	docker-compose run --entrypoint sh --no-deps --rm poems-scraper /opt/scripts/lint.sh $(fix)

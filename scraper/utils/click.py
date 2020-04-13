@@ -4,7 +4,7 @@ from functools import wraps
 
 def coro(f):
     """
-    Decorator to allow click work with asyncio.
+    Decorator to allow click work natively with asyncio.
     related: https://github.com/pallets/click/issues/85#issuecomment-43378930
     """
 
