@@ -69,9 +69,9 @@ def _update_poem(raw_data: Dict, poem: Poem) -> Poem:
     )
     poem.scraped = True
     if poem_data:
-        poem.author = poem_data["author"]["name"]
-        poem.title = poem_data["name"]
-        poem.text = poem_data["text"]
+        poem.author = poem_data.get("author", {}).get("name")
+        poem.title = poem_data.get("name")
+        poem.text = poem_data.get("text")
     return poem
 
 
