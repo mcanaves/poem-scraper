@@ -32,12 +32,12 @@ def list_sources():
 @click.command()
 @click.argument("source")
 @click.option(
-    "--only-poems",
+    "--generate-index",
     is_flag=True,
-    help="Scrape only previous indexed poems avoiding categories, index and scraped ones.",
+    help="Generate poems index. If existing poems match with new index data the previous ones will be lost.",
 )
 @coro
-async def scrape_source(source: str, only_poems):
+async def scrape_source(source: str, generate_index: bool):
     """
     Start scraping a source.
     """
@@ -50,7 +50,7 @@ async def scrape_source(source: str, only_poems):
 
     category_respository = MongoCategoryRepository()
     poem_repository = MongoPoemRepository()
-    if not only_poems:
+    if generate_index:
         await scrape_categories_interactor(source, category_respository)
         await scrape_index_interactor(source, category_respository, poem_repository)
     await scrape_poems_interactor(source, poem_repository)
