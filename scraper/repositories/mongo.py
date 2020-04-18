@@ -5,43 +5,18 @@ from pymongo import ReplaceOne
 
 from scraper import settings
 from scraper.entities import Category, Poem
-
-
-class CategoryRepository:
-    async def list(self, source: Optional[str] = None) -> List[Category]:
-        raise NotImplementedError
-
-    # TODO: only create if exist nothing
-    async def bulk_create(self, categories: List[Category], upsert: bool = True):
-        raise NotImplementedError
-
-
-class PoemRepository:
-    # TODO: batch
-    async def list(
-        self, source: Optional[str] = None, only_not_scraped: bool = False
-    ) -> List[Poem]:
-        raise NotImplementedError
-
-    # TODO: only create if exist nothing
-    async def create(self, poem: Poem, upsert: bool = True):
-        raise NotImplementedError
-
-    async def bulk_create(self, poems: List[Poem], upsert: bool = True):
-        raise NotImplementedError
+from scraper.repositories.base import CategoryRepository, PoemRepository
 
 
 class MongoBaseRepository:
-    def __init__(self):
+    def __init__(self, collection: str):
         client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGO_DSN)
-        self.db = client.poetry
+        self.colletion = client.poetry[collection]
 
 
-# TODO: refactor repo to same and load onyl change collections
 class MongoCategoryRepository(MongoBaseRepository, CategoryRepository):
     def __init__(self):
-        super().__init__()
-        self.colletion = self.db.categories
+        super().__init__("categories")
 
     async def list(self, source: Optional[str] = None) -> List[Category]:
         query = {"source": {"$eq": source}} if source else {}
@@ -63,8 +38,7 @@ class MongoCategoryRepository(MongoBaseRepository, CategoryRepository):
 
 class MongoPoemRepository(MongoBaseRepository, PoemRepository):
     def __init__(self):
-        super().__init__()
-        self.colletion = self.db.poems
+        super().__init__("poems")
 
     async def list(
         self, source: Optional[str] = None, only_not_scraped: bool = False

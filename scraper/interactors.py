@@ -5,7 +5,7 @@ from typing import List
 
 from scraper.integrations import registry
 from scraper.integrations.base import Integration
-from scraper.repositories import CategoryRepository, PoemRepository
+from scraper.repositories.base import CategoryRepository, PoemRepository
 from scraper.utils.integrations import integration
 
 logger = logging.getLogger(__name__)

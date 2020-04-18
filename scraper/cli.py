@@ -7,7 +7,7 @@ from scraper.interactors import list_sources as list_sources_interactor
 from scraper.interactors import scrape_categories as scrape_categories_interactor
 from scraper.interactors import scrape_index as scrape_index_interactor
 from scraper.interactors import scrape_poems as scrape_poems_interactor
-from scraper.repositories import MongoCategoryRepository, MongoPoemRepository
+from scraper.repositories.mongo import MongoCategoryRepository, MongoPoemRepository
 from scraper.utils.click import coro
 
 
