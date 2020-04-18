@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from itertools import chain
+from itertools import chain, islice
 from typing import List
 
 from scraper.integrations import registry
@@ -50,11 +50,14 @@ async def scrape_index(
 async def scrape_poems(
     source: str, integration: Integration, repository: PoemRepository,
 ):
-    # TODO: batch of 10 parallelas
-    poems = await repository.list(source=source, only_not_scraped=True)
-    logger.info(f"Scraping {len(poems)} poems")
-    for poem in poems:
+    async def operation(poem):
         logger.debug(f"Scraping {poem.title} poem")
         if (updated_poem := await integration.scrape_poem(poem)) :
             await repository.create(updated_poem)
+
+    logger.info("Scraping poems")
+    poems = await repository.list(source=source, only_not_scraped=True)
+    poems_chunks = (chain([p], islice(poems, 20 - 1)) for p in poems)
+    for chunk in poems_chunks:
+        await asyncio.gather(*(operation(p) for p in chunk))
     logger.info("Scraped poems")
