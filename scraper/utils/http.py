@@ -1,10 +1,8 @@
 import logging
 from functools import update_wrapper
-from traceback import format_exc
 from typing import Optional
 
 from scraper import settings
-
 
 logger = logging.getLogger(__name__)
 
