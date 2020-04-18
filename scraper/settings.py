@@ -1,7 +1,7 @@
 import logging
 import os
 
-MONGO_DSN = os.getenv("MONGO_DSN", "mongodb://admin:secret@mongo:27017")
+MONGO_DSN = os.getenv("MONGO_DSN", "mongodb://admin:secret@mongo-poems-scraper:27017")
 
 DEFAULT_HTTP_RETRIES = int(os.getenv("HTTP_RETRIES", 5))
 
