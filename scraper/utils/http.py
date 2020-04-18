@@ -3,12 +3,17 @@ from functools import update_wrapper
 from traceback import format_exc
 from typing import Optional
 
+from scraper import settings
+
+
 logger = logging.getLogger(__name__)
 
 
 class Retry:
     def __init__(
-        self, excepts: Optional[tuple] = None, max_retries: int = 3,
+        self,
+        excepts: Optional[tuple] = None,
+        max_retries: int = settings.DEFAULT_HTTP_RETRIES,
     ):
         self._excepts = excepts or Exception
         self._max_retries = max_retries
