@@ -17,7 +17,7 @@ DATA_URL = "https://www.poetryfoundation.org/ajax/poems"
 FILTER_QUERY = "?page={}&school-period={}"
 
 
-@Retry(excepts=(httpx.TimeoutException,))
+@Retry(excepts=(httpx.TimeoutException, httpx.NetworkError))
 async def get_poems_index(
     ss: httpx.AsyncClient, period_slug: str, page: int = 1
 ) -> Optional[List[Dict]]:
@@ -89,7 +89,7 @@ class PoetryFoundation(Integration):
         )
         return _parse_poems_list(poems, category)
 
-    @Retry(excepts=(httpx.TimeoutException,))
+    @Retry(excepts=(httpx.TimeoutException, httpx.NetworkError))
     async def scrape_poem(self, poem: Poem) -> Optional[Poem]:
         logger.debug(f"Scraping `{poem.category.source}` {poem.title} poem")
         response = await self.ss.get(poem.link, timeout=10.0)
