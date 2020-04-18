@@ -20,7 +20,7 @@ def integration(fnx):
     @wraps(fnx)
     async def _wraps(source: str, *args):
         integration = _load_integration(source)
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(http2=True) as client:
             return await fnx(source, integration(ss=client), *args)
 
     return _wraps
