@@ -23,10 +23,10 @@ async def get_categories(source: str, repository: CategoryRepository):
 async def scrape_categories(
     source: str, integration: Integration, repository: CategoryRepository
 ):
-    logger.info(f"Scraping `{source}` poems categories")
+    logger.info(f"Scraping poems categories")
     categories = await integration.scrape_categories()
     await repository.bulk_create(categories)
-    logger.debug(f"Scraped {len(categories)} `{source}` poems categories")
+    logger.info(f"Scraped {len(categories)} poems categories")
 
 
 @integration
@@ -37,10 +37,11 @@ async def scrape_index(
     poem_repository: PoemRepository,
 ):
     async def operation(category):
+        logger.info(f"Scraping {category.name} poems index")
         poems = await integration.scrape_poems_index(category)
         await poem_repository.bulk_create(poems)
+        logger.info(f"Scraped {category.name} poems index with {len(poems)} poems")
 
-    logger.info(f"Generating `{source}` poems index")
     categories = await category_repository.list(source)
     await asyncio.gather(*[operation(c) for c in categories])
 
@@ -50,10 +51,10 @@ async def scrape_poems(
     source: str, integration: Integration, repository: PoemRepository,
 ):
     # TODO: batch of 10 parallelas
-    logger.info(f"Scraping `{source}` poems")
-    poems = await repository.list(source=source, only_indexed=True)
-    logger.debug(f"Scraping {len(poems)} {source} poems")
+    poems = await repository.list(source=source, only_not_scraped=True)
+    logger.info(f"Scraping {len(poems)} poems")
     for poem in poems:
+        logger.debug(f"Scraping {poem.title} poem")
         if (updated_poem := await integration.scrape_poem(poem)) :
             await repository.create(updated_poem)
-    logger.debug(f"Scraped {source} poems")
+    logger.info("Scraped poems")

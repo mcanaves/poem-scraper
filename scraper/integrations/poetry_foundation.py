@@ -77,21 +77,16 @@ class PoetryFoundation(Integration):
         return _parse_categories(data)
 
     async def scrape_poems_index(self, category: Category) -> List[Poem]:
-        logger.debug(f"Scraping `{category.source}` {category.name} poems index")
         response = await get_poems_index(self.ss, category.internal_id)
         poems = response.get("Entries", [])
         pages = ceil(response.get("TotalResults", 0) / 20)
         for page in range(2, pages + 1):
             response = await get_poems_index(self.ss, category.internal_id, page)
             poems.extend(response.get("Entries", []))
-        logger.debug(
-            f"Generated `{category.source}` {category.name} poems index with {len(poems)} poems"
-        )
         return _parse_poems_list(poems, category)
 
     @Retry(excepts=(httpx.TimeoutException, httpx.NetworkError))
     async def scrape_poem(self, poem: Poem) -> Optional[Poem]:
-        logger.debug(f"Scraping `{poem.category.source}` {poem.title} poem")
         response = await self.ss.get(poem.link, timeout=10.0)
         selector = Selector(response.text)
         json_ld_data = json.loads(

@@ -10,15 +10,17 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": "%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+            "format": "%(asctime)s | %(levelname)s | %(integration)s | %(message)s",
             "datefmt": "%Y-%m-%dT%H:%M:%S%z",
         },
     },
+    "filters": {"integration": {"()": "scraper.utils.logger.IntegrationFilter"},},
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "level": os.getenv("LOGGING_LEVEL", default=logging.ERROR),
             "formatter": "default",
+            "filters": ["integration"],
         },
     },
     "root": {"level": logging.WARNING, "handlers": ["console"],},
