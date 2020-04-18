@@ -1,10 +1,12 @@
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 from scraper.entities import Category, Poem
 
 
 class CategoryRepository:
-    async def list(self, source: Optional[str] = None) -> List[Category]:
+    async def list(
+        self, source: Optional[str] = None
+    ) -> Generator[Category, None, None]:
         raise NotImplementedError
 
     async def bulk_create(self, categories: List[Category], upsert: bool = True):
@@ -14,7 +16,7 @@ class CategoryRepository:
 class PoemRepository:
     async def list(
         self, source: Optional[str] = None, only_not_scraped: bool = False
-    ) -> List[Poem]:
+    ) -> Generator[Poem, None, None]:
         raise NotImplementedError
 
     async def create(self, poem: Poem, upsert: bool = True):

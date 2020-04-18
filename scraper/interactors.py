@@ -43,7 +43,7 @@ async def scrape_index(
         logger.info(f"Scraped {category.name} poems index with {len(poems)} poems")
 
     categories = await category_repository.list(source)
-    await asyncio.gather(*[operation(c) for c in categories])
+    await asyncio.gather(*(operation(c) for c in categories))
 
 
 @integration

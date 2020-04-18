@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 import motor.motor_asyncio
 from pymongo import ReplaceOne
@@ -18,10 +18,12 @@ class MongoCategoryRepository(MongoBaseRepository, CategoryRepository):
     def __init__(self):
         super().__init__("categories")
 
-    async def list(self, source: Optional[str] = None) -> List[Category]:
+    async def list(
+        self, source: Optional[str] = None
+    ) -> Generator[Category, None, None]:
         query = {"source": {"$eq": source}} if source else {}
         result = await self.colletion.find(query).to_list(None)
-        return [Category.from_dict(r) for r in result]
+        return (Category.from_dict(r) for r in result)
 
     async def bulk_create(self, categories: List[Category], upsert: bool = True):
         await self.colletion.bulk_write(
@@ -42,15 +44,15 @@ class MongoPoemRepository(MongoBaseRepository, PoemRepository):
 
     async def list(
         self, source: Optional[str] = None, only_not_scraped: bool = False
-    ) -> List[Poem]:
+    ) -> Generator[Poem, None, None]:
         query = {"category.source": {"$eq": source}} if source else {}
         if only_not_scraped:
             query = {"$and": [query, {"scraped": {"$eq": False}}]}
         result = await self.colletion.find(query).to_list(None)
-        return [
+        return (
             Poem.from_dict({**r, "category": Category.from_dict(r["category"])})
             for r in result
-        ]
+        )
 
     async def create(self, poem: Poem, upsert: bool = True):
         await self.colletion.replace_one(
