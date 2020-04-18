@@ -19,7 +19,7 @@ class CategoryRepository:
 class PoemRepository:
     # TODO: batch
     async def list(
-        self, source: Optional[str] = None, only_indexed: bool = False
+        self, source: Optional[str] = None, only_not_scraped: bool = False
     ) -> List[Poem]:
         raise NotImplementedError
 
@@ -67,11 +67,11 @@ class MongoPoemRepository(MongoBaseRepository, PoemRepository):
         self.colletion = self.db.poems
 
     async def list(
-        self, source: Optional[str] = None, only_indexed: bool = False
+        self, source: Optional[str] = None, only_not_scraped: bool = False
     ) -> List[Poem]:
         query = {"category.source": {"$eq": source}} if source else {}
-        if only_indexed:
-            query = {"$and": [query, {"text": {"$eq": None}}]}
+        if only_not_scraped:
+            query = {"$and": [query, {"scraped": {"$eq": False}}]}
         result = await self.colletion.find(query).to_list(None)
         return [
             Poem.from_dict({**r, "category": Category.from_dict(r["category"])})

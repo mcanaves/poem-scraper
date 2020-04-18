@@ -36,6 +36,7 @@ class Poem(BaseEntity):
     category: Category = field(repr=False)
     link: str = field(repr=False)
     text: Optional[str] = field(repr=False, default=None)
+    scraped: Optional[bool] = False
 
     @classmethod
     def from_dict(cls, adict: Dict) -> Poem:
@@ -45,4 +46,5 @@ class Poem(BaseEntity):
             category=adict["category"],
             link=adict["link"],
             text=adict.get("text"),
+            scraped=adict.get("scraped"),
         )

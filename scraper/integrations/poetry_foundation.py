@@ -1,7 +1,7 @@
 import json
 import logging
 from math import ceil
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import httpx
 from parsel import Selector
@@ -67,9 +67,11 @@ def _update_poem(raw_data: Dict, poem: Poem) -> Poem:
     poem_data = next(
         (d for d in raw_data["@graph"] if d["@type"] == "CreativeWork"), None
     )
-    poem.author = poem_data["author"]["name"]
-    poem.title = poem_data["name"]
-    poem.text = poem_data["text"]
+    poem.scraped = True
+    if poem_data:
+        poem.author = poem_data["author"]["name"]
+        poem.title = poem_data["name"]
+        poem.text = poem_data["text"]
     return poem
 
 
