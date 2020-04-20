@@ -57,7 +57,7 @@ async def scrape_poems(
 
     logger.info("Scraping poems")
     poems = await repository.list(source=source, only_not_scraped=True)
-    poems_chunks = (chain([p], islice(poems, 20 - 1)) for p in poems)
+    poems_chunks = (chain([p], islice(poems, 10 - 1)) for p in poems)
     for chunk in poems_chunks:
         await asyncio.gather(*(operation(p) for p in chunk))
     logger.info("Scraped poems")
