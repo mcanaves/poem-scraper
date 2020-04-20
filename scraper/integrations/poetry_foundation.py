@@ -16,7 +16,11 @@ logger = logging.getLogger(__name__)
 DATA_URL = "https://www.poetryfoundation.org/ajax/poems"
 FILTER_QUERY = "?page={}&school-period={}"
 PAGE_SIZE = 20
-RETRY_EXCEPTS = (httpx.TimeoutException, httpx.NetworkError)
+RETRY_EXCEPTS = (
+    httpx.TimeoutException,
+    httpx.NetworkError,
+    httpx.ProtocolError,
+)
 
 
 @Retry(excepts=RETRY_EXCEPTS)
