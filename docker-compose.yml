@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  poems-scraper:
+    build:
+        context: .
+        args:
+          APP_ENV: 'local'
+    environment:
+      - LOGGING_LEVEL=DEBUG
+    volumes:
+      - .:/opt:rw
+    networks:
+      - poems-scraper-net
+    depends_on:
+      - mongo-poems-scraper
+      
+  mongo-poems-scraper:
+    image: mongo:4.2-bionic
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    volumes:
+      - mongo-data:/data/db
+    ports:
+     - 27018:27017
+    networks:
+      - poems-scraper-net
+  
+  mongo-express-poems-scraper:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_SERVER: mongo-poems-scraper
+    networks:
+      - poems-scraper-net
+    depends_on:
+      - mongo-poems-scraper
+      
+networks:
+  poems-scraper-net: {}
+
+volumes:
+  mongo-data: {}
