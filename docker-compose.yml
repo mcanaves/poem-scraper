@@ -6,6 +6,7 @@ services:
         context: .
         args:
           APP_ENV: 'local'
+    image: pfg/poems-scraper:latest
     environment:
       - LOGGING_LEVEL=DEBUG
     volumes:
@@ -21,11 +22,12 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
     volumes:
-      - mongo-data:/data/db
+      - mongo-poems-scraper-data:/data/db
     ports:
      - 27018:27017
     networks:
       - poems-scraper-net
+      - pfg-grp-net
   
   mongo-express-poems-scraper:
     image: mongo-express
@@ -43,6 +45,8 @@ services:
       
 networks:
   poems-scraper-net: {}
+  pfg-grp-net:
+    external: true
 
 volumes:
-  mongo-data: {}
+  mongo-poems-scraper-data: {}
