@@ -43,20 +43,23 @@ class MongoPoemRepository(MongoBaseRepository, PoemRepository):
         super().__init__("poems")
 
     async def list(
-        self, source: Optional[str] = None, only_not_scraped: bool = False
+        self,
+        source: Optional[str] = None,
+        only_not_scraped: bool = False,
+        with_text: Optional[bool] = None,
     ) -> Generator[Poem, None, None]:
         query = {"category.source": {"$eq": source}} if source else {}
         if only_not_scraped:
             query = {"$and": [query, {"scraped": {"$eq": False}}]}
+        if with_text is not None:
+            comp = "$ne" if with_text else "$eq"
+            query = {"$and": [query, {"text": {comp: None}}]}
         result = await self.colletion.find(query).to_list(None)
-        return (
-            Poem.from_dict({**r, "category": Category.from_dict(r["category"])})
-            for r in result
-        )
+        return (Poem.from_dict(r) for r in result)
 
     async def create(self, poem: Poem, upsert: bool = True):
         await self.colletion.replace_one(
-            {"category.source": poem.category.source, "link": poem.link},
+            {"category": poem.category, "link": poem.link},
             poem.to_dict(),
             upsert=upsert,
         )
@@ -65,7 +68,7 @@ class MongoPoemRepository(MongoBaseRepository, PoemRepository):
         await self.colletion.bulk_write(
             [
                 ReplaceOne(
-                    {"category.source": p.category.source, "link": p.link},
+                    {"category.source": p.category, "link": p.link},
                     p.to_dict(),
                     upsert=upsert,
                 )

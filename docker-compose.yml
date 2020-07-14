@@ -23,6 +23,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=secret
     volumes:
       - mongo-poems-scraper-data:/data/db
+      - ./data:/export:rw
     ports:
      - 27018:27017
     networks:

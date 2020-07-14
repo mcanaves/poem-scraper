@@ -15,7 +15,10 @@ class CategoryRepository:
 
 class PoemRepository:
     async def list(
-        self, source: Optional[str] = None, only_not_scraped: bool = False
+        self,
+        source: Optional[str] = None,
+        only_not_scraped: bool = False,
+        with_text: Optional[bool] = None,
     ) -> Generator[Poem, None, None]:
         raise NotImplementedError
 

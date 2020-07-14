@@ -1,12 +1,15 @@
 import asyncio
 import logging
+import os
 from itertools import chain, islice
 from typing import List
 
+from scraper import settings
 from scraper.integrations import registry
 from scraper.integrations.base import Integration
 from scraper.repositories.base import CategoryRepository, PoemRepository
 from scraper.utils.integrations import integration
+from scraper.utils.slugify import slugify_title
 
 logger = logging.getLogger(__name__)
 
@@ -61,3 +64,29 @@ async def scrape_poems(
     for chunk in poems_chunks:
         await asyncio.gather(*(operation(p) for p in chunk))
     logger.info("Scraped poems")
+
+
+async def export_data(
+    category_repository: CategoryRepository, poem_repository: PoemRepository
+) -> bool:
+    # Create folders
+    try:
+        for category in await category_repository.list():
+            os.mkdir(os.path.join(settings.EXPORT_DATA_PATH, str(category.internal_id)))
+    except Exception:
+        logger.exception("Creation of the directories failed")
+        return False
+    logger.debug("Successfully created directories")
+    # Create poems
+    try:
+        for poem in await poem_repository.list(with_text=True):
+            title = slugify_title(poem.title)
+            path = f"{settings.EXPORT_DATA_PATH}/{poem.category}/{title}"
+            f = open(f"{path}.txt", "w")
+            f.write(str(poem.text))
+            f.close()
+    except Exception:
+        logger.exception("Creation of the poem failed")
+        return False
+    logger.debug("Successfully created poems")
+    return True

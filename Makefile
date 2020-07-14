@@ -10,10 +10,17 @@ help:  ## Shows this help message.
 build: ## Build docker image including base dependencies.
 	docker-compose build
 
+.PHONY: sources
+sources: ## List all available scraping sources.
+	docker-compose run --rm poems-scraper list-sources
+
 .PHONY: scraping
 scraping: ## Start scraping. Arguments: options=[OPTIONS]. Use --help to see all options.
-	docker-compose run --rm poems-scraper $(options)
+	docker-compose run --rm poems-scraper scrape-source $(options)
 
+.PHONY: export
+export: ## Export scraped data.
+	docker-compose run --rm poems-scraper export-data
 
 ##@ 🛠  Testing and development
 

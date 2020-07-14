@@ -14,3 +14,7 @@ dmypy.json
 # Editors
 .vscode
 *.code-workspace
+
+# Project
+data/
+!data/.gitkeep

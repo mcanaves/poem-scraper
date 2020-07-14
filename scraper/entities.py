@@ -33,7 +33,7 @@ class Category(BaseEntity):
 class Poem(BaseEntity):
     title: str
     author: str
-    category: Category = field(repr=False)
+    category: str = field(repr=False)
     link: str = field(repr=False)
     text: Optional[str] = field(repr=False, default=None)
     scraped: Optional[bool] = False

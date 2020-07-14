@@ -32,3 +32,5 @@ LOGGING = {
         },
     },
 }
+
+EXPORT_DATA_PATH = os.getenv("EXPORT_DATA_PATH", "/opt/data")
