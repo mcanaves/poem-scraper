@@ -1,5 +1,5 @@
 click==7.1.1
-httpx==0.12.1
+httpx==0.23.0
 parsel==1.5.2
 motor==2.1.0
 python-slugify==4.0.0
